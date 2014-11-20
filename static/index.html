@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Serial - Web</title>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"> </script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <link rel="stylesheet" href="/static/index.css" />
+    <script type="text/javascript">
+        $(function() {
+            var socket = io();
+            var label = $('#text');
+            var input = $('input');
+            var ENTER = 13;
+
+            socket.on("data", function(msg) {
+                label.text(msg);
+            });
+
+            input.bind("keypress", function(event) {
+                if (event.keyCode == ENTER) {
+                    onSend();    
+                }
+            });
+
+            $('button').click(onSend);
+
+            function onSend() {
+                var command = input.val();
+                if (command !== "") {
+                    socket.emit("command", input.val());    
+                }
+            }
+
+            // set focus on input
+            input.focus();
+        });
+    </script>
+</head>
+
+<body>
+    <section>
+        <label>Command: <input type="text" value="LED1.write(1)"> <button>Send</button></label>
+    </section>
+    
+    <section>
+        <label>Echo from board: <span id="text"></span></label>
+    <section>
+</body>
+
+</html>
